@@ -1,3 +1,9 @@
+### Notice
+* Edited for ChromieCraft's shared auction house rate
+
+***
+***
+
 # aux - WoW 1.12 AddOn
 
 The most advanced auction house addOn for the 1.12 client with some features more advanced than anything even on retail.

@@ -17,7 +17,32 @@ local al = require 'aux.gui.auction_listing'
 
 TAB 'Post'
 
-local DURATION_2, DURATION_8, DURATION_12, DURATION_24, DURATION_48 = 120, 480, 720, 1440, 2880
+-- Easy access discount adjuster 
+-- Figure out how to add a slash command for edits?
+local SERVER_DEPOSIT_DISCOUNT = 10
+
+-- Trimmed the 2/8 hour listings since they're unused
+-- Is this still necessary? Just use the record codes directly
+local DURATION_12, DURATION_24, DURATION_48 = 720, 1440, 2880
+
+-- The original code didn't use the duration codes, which resulted 
+-- in many headaches over incorrect deposit calculations
+function get_duration_code(duration)
+    local duration_code = nil
+    if duration == DURATION_12 then
+        duration_code = 1
+    elseif duration == DURATION_24 then
+        duration_code = 2
+    elseif duration == DURATION_48 then
+        duration_code = 4
+    end
+    if duration_code then
+        return duration_code
+    else
+        print("Error:", duration)
+    end
+end
+
 
 local settings_schema = {'tuple', '#', {duration='number'}, {start_price='number'}, {buyout_price='number'}, {hidden='boolean'}}
 
@@ -215,14 +240,7 @@ function post_auctions()
         local duration = UIDropDownMenu_GetSelectedValue(duration_dropdown)
 		local key = selected_item.key
 
-        local duration_code
-		if duration == DURATION_2 then
-            duration_code = 2
-		elseif duration == DURATION_8 or duration == DURATION_12 then
-            duration_code = 3
-		elseif duration == DURATION_24 or duration == DURATION_48 then
-            duration_code = 4
-		end
+        local duration_code = get_duration_code(duration)
 
 		post.start(
 			key,
@@ -315,10 +333,20 @@ function update_item_configuration()
         stack_count_slider.editbox:SetNumber(stack_count_slider:GetValue())
 
         do
-            local deposit_factor = UnitFactionGroup'npc' and .05 or .25
-            local duration_factor = UIDropDownMenu_GetSelectedValue(duration_dropdown) / 120
+            -- ChromieCraft base AH deposit rate doesn't change for faction/neutral
+            local deposit_factor = 0.75
+
+            -- Replaced old duration_factor with duraction codes, which results
+            -- in cleaner maths, with smaller decimals, hopefully accurate results! :D
+            local duration_factor = get_duration_code(UIDropDownMenu_GetSelectedValue(duration_dropdown))
+
             local stack_size, stack_count = selected_item.max_charges and 1 or stack_size_slider:GetValue(), stack_count_slider:GetValue()
             local amount = floor(selected_item.unit_vendor_price * deposit_factor * stack_size) * stack_count * duration_factor
+            
+            -- Apply the server discount (10%) to the deposit
+            -- Formula was taken from the AuctionHouseDepositFixer addon
+            amount = amount * (SERVER_DEPOSIT_DISCOUNT / 100)
+
             deposit:SetText('Deposit: ' .. money.to_string(amount, nil, nil, color.text.enabled))
         end
 
