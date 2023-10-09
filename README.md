@@ -11,7 +11,7 @@
       │           └── 📄aux-addon.toc  
       └── WoW.exe 
   ```
- * Alternatively, download the [latest release](https://api.github.com/repos/nehswu/aux-addon/releases/latest) and extract directly to your AddOns folder.
+ * Alternatively, download the [latest release](https://github.com/nehswu/aux-addon/releases/download/minor/aux-addon.zip) and extract directly to your AddOns folder.
 
 ***
 ***
