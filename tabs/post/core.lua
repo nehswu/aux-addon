@@ -18,15 +18,15 @@ local al = require 'aux.gui.auction_listing'
 TAB 'Post'
 
 -- Easy access discount adjuster 
--- Figure out how to add a slash command for edits?
+-- Figure out how to add a slash command for edits? -nehs
 local SERVER_DEPOSIT_DISCOUNT = 10
 
 -- Trimmed the 2/8 hour listings since they're unused
--- Is this still necessary? Just use the record codes directly
+-- Is this still necessary? Just use the duration codes directly -nehs
 local DURATION_12, DURATION_24, DURATION_48 = 720, 1440, 2880
 
 -- The original code didn't use the duration codes, which resulted 
--- in many headaches over incorrect deposit calculations
+-- in many headaches over incorrect deposit calculations -nehs
 function get_duration_code(duration)
     local duration_code = nil
     if duration == DURATION_12 then
@@ -240,6 +240,7 @@ function post_auctions()
         local duration = UIDropDownMenu_GetSelectedValue(duration_dropdown)
 		local key = selected_item.key
 
+        -- This logic was moved to get_duration_code() -nehs
         local duration_code = get_duration_code(duration)
 
 		post.start(
@@ -333,18 +334,18 @@ function update_item_configuration()
         stack_count_slider.editbox:SetNumber(stack_count_slider:GetValue())
 
         do
-            -- ChromieCraft base AH deposit rate doesn't change for faction/neutral
+            -- ChromieCraft base AH deposit rate doesn't change for faction/neutral -nehs
             local deposit_factor = 0.75
 
             -- Replaced old duration_factor with duraction codes, which results
-            -- in cleaner maths, with smaller decimals, hopefully accurate results! :D
+            -- in cleaner maths, with smaller decimals, hopefully accurate results! :D -nehs
             local duration_factor = get_duration_code(UIDropDownMenu_GetSelectedValue(duration_dropdown))
 
             local stack_size, stack_count = selected_item.max_charges and 1 or stack_size_slider:GetValue(), stack_count_slider:GetValue()
             local amount = floor(selected_item.unit_vendor_price * deposit_factor * stack_size) * stack_count * duration_factor
             
             -- Apply the server discount (10%) to the deposit
-            -- Formula was taken from the AuctionHouseDepositFixer addon
+            -- Formula was taken from the AuctionHouseDepositFixer addon -nehs
             amount = amount * (SERVER_DEPOSIT_DISCOUNT / 100)
 
             deposit:SetText('Deposit: ' .. money.to_string(amount, nil, nil, color.text.enabled))

@@ -1,5 +1,17 @@
-### Notice
-* Edited for ChromieCraft's shared auction house rate
+> [!NOTE]  
+> This addon was edited specifically for ChromieCraft's auction house deposit rate/discount. If it works on other servers, it's a happy coincidence.  
+
+#### Installation
+- If downloading from GitHub via Code → Download ZIP menu, make sure to rename the extracted folder from <code style="color : red">aux-addon-main</code> to <code style="color : green">aux-addon</code> so it matches the folder structure below, otherwise the game won't detect the addon.
+  ```
+  └── 📂World of Warcraft/  
+      ├── 📂Interface/  
+      │   └── 📂AddOns/  
+      │       └── 📂aux-addon/  
+      │           └── 📄aux-addon.toc  
+      └── WoW.exe 
+  ```
+ * Alternatively, download the [latest release](https://api.github.com/repos/nehswu/aux-addon/releases/latest) and extract directly to your AddOns folder.
 
 ***
 ***
